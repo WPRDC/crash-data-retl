@@ -1,0 +1,8 @@
+*.pyc
+*.csv
+.DS_STORE
+*notes.txt
+parameters/
+*.log
+*__pycache__
+docs/
