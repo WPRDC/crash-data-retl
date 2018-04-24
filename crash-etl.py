@@ -288,7 +288,7 @@ def find_resource_id(site,package_id,resource_name,API_key=None):
     return None
 
 def main(*args,**kwparams):
-    specify_resource_by_name = True
+
     target = kwparams.get('filename',None)
     if target is None:
         raise ValueError("Unable to process data without filename.")
@@ -320,11 +320,6 @@ def main(*args,**kwparams):
     fields_to_publish = fields0
     #print("fields_to_publish = {}".format(fields_to_publish))
 
-    if specify_resource_by_name:
-        kwargs = {'resource_name': '{} Crash Data'.format(year)}
-    #else:
-        #kwargs = {'resource_id': ''}
-    #resource_id = '8cd32648-757c-4637-9076-85e144997ca8' # Raw liens
     #target = '/Users/daw165/data/TaxLiens/July31_2013/raw-liens.csv' # This path is hard-coded.
 
     # Call function that converts fixed-width file into a CSV file. The function 
@@ -346,10 +341,21 @@ def main(*args,**kwparams):
     package_id = settings['loader'][server]['package_id']
     API_key = settings['loader'][server]['ckan_api_key']
 
-    # Set clear_first based on whether the resource is already there.
-    resource_id = find_resource_id(site,package_id,kwargs['resource_name'],API_key)
+
+    resource_id = kwparams.get('resource_id',None)
+    specify_resource_by_name = (resource_id is None)
+
+    kwargs = {}
+    if specify_resource_by_name:
+        kwargs['resource_name'] = kwparams.get('resource_name','{} Crash Data'.format(year))
+        # Set clear_first based on whether the resource is already there.
+        resource_id = find_resource_id(site,package_id,kwargs['resource_name'],API_key)
+    else:
+        kwargs['resource_id'] = resource_id
+        
     clear_first = (resource_id is not None)
     print("resource_id = {}, clear_first = {}".format(resource_id,clear_first))
+    #resource_id = '8cd32648-757c-4637-9076-85e144997ca8' # Raw liens
 
     print("Preparing to pipe data from {} to resource {} package ID {} on {}".format(target,list(kwargs.values())[0],package_id,site))
     time.sleep(1.0)
@@ -389,6 +395,8 @@ if __name__ == "__main__":
         main(filename = sys.argv[1], server='test')
     elif len(sys.argv) == 3:
         main(filename = sys.argv[1], server=sys.argv[2])
+    elif len(sys.argv) == 4:
+        main(filename = sys.argv[1], server=sys.argv[2], resource_id=sys.argv[3])
     else:
         print("There are either too many or too few command-line arguments.")
         
