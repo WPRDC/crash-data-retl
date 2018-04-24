@@ -1,8 +1,9 @@
 *.pyc
-*.csv
 .DS_STORE
 *notes.txt
 parameters/
 *.log
-*__pycache__
+__pycache__
 docs/
+detritus/
+/*.csv
