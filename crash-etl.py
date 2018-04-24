@@ -218,9 +218,15 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     #   Warning: The invocation order of decorated methods of the same 
     #   type is not guaranteed. If you need to guarantee order of different 
     #   processing steps, you should put them in the same processing method.
-    #@pre_load
-    #def plaintiffs_only_and_avoid_null_keys(self, data):
-        #if data['party_type'] != 'Plaintiff':
+    @pre_load
+    def fix_types(self, data):
+        # Fixing of types is necessary since the 2016 data got typed
+        # differently.
+        if data['est_hrs_closed'] is not None:
+            data['est_hrs_closed'] = int(float(data['est_hrs_closed']))
+        if data['cons_zone_spd_lim'] is not None:
+            data['cons_zone_spd_lim'] = int(float(data['cons_zone_spd_lim']))
+
         #    data['party_type'] = '' # If you make these values
         #    # None instead of empty strings, CKAN somehow
         #    # interprets each None as a different key value,
