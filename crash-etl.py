@@ -372,7 +372,8 @@ def main(*args,**kwparams):
                                       log_status=False,
                                       settings_file=SETTINGS_FILE,
                                       settings_from_file=True,
-                                      start_from_chunk=0
+                                      start_from_chunk=0,
+                                      chunk_size=5000
                                       )
     pipeline_ok = the_pipeline.connect(pl.FileConnector, target, encoding='utf-8') \
         .extract(pl.CSVExtractor, firstline_headers=True) \
