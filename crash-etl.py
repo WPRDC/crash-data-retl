@@ -313,7 +313,7 @@ def main(*args,**kwparams):
 
     fieldnames = headers.split(',')
 
-    if 'TOTAL_INJ_COUNT' in fieldnames or 'SCHOOL_BUS_UNIT' in fieldnames:
+    if 'TOT_INJ_COUNT' in fieldnames or 'SCHOOL_BUS_UNIT' in fieldnames:
         schema = ExtendedCrashSchema
         print("Using the extended schema to accommodate extra fields.")
     else:
