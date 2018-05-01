@@ -258,7 +258,7 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
 #flag below is True.
 
 class ExtendedCrashSchema(CrashSchema): 
-    total_inj_count = fields.Integer(dump_to="TOTAL_INJ_COUNT", allow_none=True)
+    tot_inj_count = fields.Integer(dump_to="TOT_INJ_COUNT", allow_none=True)
     school_bus_unit = fields.String(dump_to="SCHOOL_BUS_UNIT", allow_none=True)
 
 def get_package_parameter(site,package_id,parameter,API_key=None):
