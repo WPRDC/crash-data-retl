@@ -302,10 +302,12 @@ def main(*args,**kwparams):
     pathlist = target.split('/')
     fname = pathlist[-1]
 
-    try:
-        year = int(fname[:4])
-    except ValueError:
-        raise ValueError("The first four characters of the file name have to be integers to allow the year to be extracted from the file name.")
+    resource_id = kwparams.get('resource_id',None)
+    if resource_id is None:
+        try:
+            year = int(fname[:4])
+        except ValueError:
+            raise ValueError("The first four characters of the file name have to be integers to allow the year to be extracted from the file name.")
    
     # Pick schema based on the presence or absence of certain fields (that showed up in the 2017 data).
     with open(target,'r') as f:
@@ -347,8 +349,6 @@ def main(*args,**kwparams):
     package_id = settings['loader'][server]['package_id']
     API_key = settings['loader'][server]['ckan_api_key']
 
-
-    resource_id = kwparams.get('resource_id',None)
     specify_resource_by_name = (resource_id is None)
 
     kwargs = {}
