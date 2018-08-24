@@ -373,7 +373,7 @@ def main(*args,**kwparams):
                                       settings_file=SETTINGS_FILE,
                                       settings_from_file=True,
                                       start_from_chunk=0,
-                                      chunk_size=500
+                                      chunk_size=2000
                                       )
     pipeline_ok = the_pipeline.connect(pl.FileConnector, target, encoding='utf-8') \
         .extract(pl.CSVExtractor, firstline_headers=True) \
