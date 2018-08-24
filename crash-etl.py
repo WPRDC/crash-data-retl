@@ -390,11 +390,45 @@ def main(*args,**kwparams):
     log = open('uploaded.log', 'w+')
     if specify_resource_by_name:
         print("Piped data to {}".format(kwargs['resource_name']))
-        log.write("Finished upserting {}\n".format(kwargs['resource_name']))
+        log.write("Finished upserting data to {}\n".format(kwargs['resource_name']))
     else:
         print("Piped data to {}".format(kwargs['resource_id']))
-        log.write("Finished upserting {}\n".format(kwargs['resource_id']))
+        log.write("Finished upserting data to {}\n".format(kwargs['resource_id']))
     log.close()
+
+    ###### Cumulative Pipeline ###########
+    schema = ExtendedCrashSchema
+    kwargs = {}
+    specify_resource_by_name = False
+    cumulative_resource_id = "2c13021f-74a9-4289-a1e5-fe0472c89881"
+    kwargs['resource_id'] = cumulative_resource_id
+
+    cumulative_pipeline = pl.Pipeline('cumulative_crash_data_pipeline',
+                                      'The Cumulative Pipeline for the Crash Data Which You Thought Would Never Come',
+                                      log_status=False,
+                                      settings_file=SETTINGS_FILE,
+                                      settings_from_file=True,
+                                      start_from_chunk=0,
+                                      chunk_size=2000
+                                      )
+    cumulative_pipeline_ok = cumulative_pipeline.connect(pl.FileConnector, target, encoding='utf-8') \
+        .extract(pl.CSVExtractor, firstline_headers=True) \
+        .schema(schema) \
+        .load(pl.CKANDatastoreLoader, server,
+              fields=fields_to_publish,
+              #package_id=package_id,
+              #resource_id=resource_id,
+              #resource_name=resource_name,
+              key_fields=['CRASH_CRN'],
+              clear_first=False, # This is different for the cumulative pipeline.
+              method='upsert',
+              **kwargs).run()
+
+    if specify_resource_by_name:
+        print("Piped data to {}".format(kwargs['resource_name']))
+    else:
+        print("Piped data to {}".format(kwargs['resource_id']))
+
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
