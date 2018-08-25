@@ -1,3 +1,15 @@
+"""The best way to use this script now is:
+
+> python crash-etl.py 2004-crashes.csv production
+> python crash-etl.py 2005-crashes.csv production
+...
+> python crash-etl.py 2005-crashes.csv production
+
+and even
+> python crash-etl.py 2010-a-few-more-crashes.csv production
+
+allowing the cumulative resource to be built up from these incremental additions.
+"""
 import os, sys, json, re, datetime
 from marshmallow import fields, pre_load, post_load
 
