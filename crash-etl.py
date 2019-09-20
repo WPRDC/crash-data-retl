@@ -6,7 +6,7 @@
 > python crash-etl.py 2005-crashes.csv production
 
 and even
-> python crash-etl.py 2010-a-few-more-crashes.csv production
+> python crash-etl.py 2010-a-few-more-crashes.csv production # [ ] This is inconsistent with how clear_first is defined in the script.
 
 allowing the cumulative resource to be built up from these incremental additions.
 """
@@ -445,7 +445,7 @@ def main(*args,**kwparams):
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
     if len(sys.argv) == 2:
-        main(filename = sys.argv[1], server='test')
+        main(filename = sys.argv[1], server='test') # If no server is specified, the test server will be used by default.
     elif len(sys.argv) == 3:
         main(filename = sys.argv[1], server=sys.argv[2])
     elif len(sys.argv) == 4:
