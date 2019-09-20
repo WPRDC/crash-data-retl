@@ -24,7 +24,7 @@ import ckanapi
 from parameters.local_parameters import SETTINGS_FILE, DATA_PATH
 from util.notify import send_to_slack
 
-class CrashSchema(pl.BaseSchema): # This schema supports raw lien records 
+class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     # (rather than synthesized liens).
     crash_crn = fields.String(dump_to="CRASH_CRN", allow_none=False)
     district = fields.String(dump_to="DISTRICT", allow_none=True)
@@ -215,20 +215,20 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     offset= fields.Integer(dump_to="OFFSET", allow_none=True)
     street_name = fields.String(dump_to="STREET_NAME", allow_none=True)
 
-    # Never let any of the key fields have None values. It's just asking for 
+    # Never let any of the key fields have None values. It's just asking for
     # multiplicity problems on upsert.
 
-    # [Note that since this script is taking data from CSV files, there should be no 
+    # [Note that since this script is taking data from CSV files, there should be no
     # columns with None values. It should all be instances like [value], [value],, [value],...
-    # where the missing value starts as as a zero-length string, which this script
+    # where the missing value starts as a zero-length string, which this script
     # is then responsible for converting into something more appropriate.
 
     class Meta:
         ordered = True
 
     # From the Marshmallow documentation:
-    #   Warning: The invocation order of decorated methods of the same 
-    #   type is not guaranteed. If you need to guarantee order of different 
+    #   Warning: The invocation order of decorated methods of the same
+    #   type is not guaranteed. If you need to guarantee order of different
     #   processing steps, you should put them in the same processing method.
     @pre_load
     def fix_types(self, data):
@@ -256,8 +256,8 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
         #    data['plaintiff'] = str(data['party_name'])
         #del data['party_type']
         #del data['party_name']
-    # The stuff below was originally written as a separate function 
-    # called avoid_null_keys, but based on the above warning, it seems 
+    # The stuff below was originally written as a separate function
+    # called avoid_null_keys, but based on the above warning, it seems
     # better to merge it with omit_owners.
 
 # Resource Metadata
@@ -269,7 +269,7 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
 #the referenced settings.json file when the corresponding
 #flag below is True.
 
-class ExtendedCrashSchema(CrashSchema): 
+class ExtendedCrashSchema(CrashSchema):
     tot_inj_count = fields.Integer(dump_to="TOT_INJ_COUNT", allow_none=True)
     school_bus_unit = fields.String(dump_to="SCHOOL_BUS_UNIT", allow_none=True)
 
@@ -320,7 +320,7 @@ def main(*args,**kwparams):
             year = int(fname[:4])
         except ValueError:
             raise ValueError("The first four characters of the file name have to be integers to allow the year to be extracted from the file name.")
-   
+
     # Pick schema based on the presence or absence of certain fields (that showed up in the 2017 data).
     with open(target,'r') as f:
         headers = f.readline().strip()
@@ -342,7 +342,7 @@ def main(*args,**kwparams):
 
     #target = '/Users/daw165/data/TaxLiens/July31_2013/raw-liens.csv' # This path is hard-coded.
 
-    # Call function that converts fixed-width file into a CSV file. The function 
+    # Call function that converts fixed-width file into a CSV file. The function
     # returns the target file path.
 
     abspath = os.path.abspath(__file__)
@@ -355,7 +355,7 @@ def main(*args,**kwparams):
     # Code below stolen from prime_ckan/*/open_a_channel() but really from utility_belt/gadgets
     #with open(os.path.dirname(os.path.abspath(__file__))+'/ckan_settings.json') as f: # The path of this file needs to be specified.
 
-    with open(SETTINGS_FILE) as f: 
+    with open(SETTINGS_FILE) as f:
         settings = json.load(f)
     site = settings['loader'][server]['ckan_root_url']
     package_id = settings['loader'][server]['package_id']
@@ -370,7 +370,7 @@ def main(*args,**kwparams):
         resource_id = find_resource_id(site,package_id,kwargs['resource_name'],API_key)
     else:
         kwargs['resource_id'] = resource_id
-        
+
     clear_first = (resource_id is not None)
     print("resource_id = {}, clear_first = {}".format(resource_id,clear_first))
     #resource_id = '8cd32648-757c-4637-9076-85e144997ca8' # Raw liens
@@ -378,7 +378,7 @@ def main(*args,**kwparams):
     print("Preparing to pipe data from {} to resource {} package ID {} on {}".format(target,list(kwargs.values())[0],package_id,site))
     time.sleep(1.0)
 
-    
+
     the_pipeline = pl.Pipeline('crash_data_pipeline',
                                       'The Long-Awaited Pipeline for the Crash Data',
                                       log_status=False,
@@ -452,4 +452,3 @@ if __name__ == "__main__":
         main(filename = sys.argv[1], server=sys.argv[2], resource_id=sys.argv[3])
     else:
         print("There are either too many or too few command-line arguments.")
-        
