@@ -223,6 +223,14 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     # where the missing value starts as a zero-length string, which this script
     # is then responsible for converting into something more appropriate.
 
+    # Ah, but now (2019) there can be None values since 3 columns are no longer
+    # being supported from this schema. Since these values were never None in
+    # the 2016 data (and presumably other sets), it seems OK to allow these
+    # values to be None (rather than shrinking the schema for every year that
+    # the State DOT stops publishing certain columns, it will only expand
+    # and certain values may just not be defined for certain years, as this
+    # will make analyzing the data easier for the user).
+
     class Meta:
         ordered = True
 
@@ -329,7 +337,9 @@ def main(*args,**kwparams):
 
     if 'TOT_INJ_COUNT' in fieldnames or 'SCHOOL_BUS_UNIT' in fieldnames:
         schema = ExtendedCrashSchema
-        print("Using the extended schema to accommodate extra fields.")
+        print("Using the extended schema to accommodate extra fields for 2017 data.")
+        print("Note that though 2018 data dropped three fields (ACCESS_CTRL, ADJ_RDWY_SEQ, and LOCAL_ROAD),")
+        print("we'll just keep using the same extended schema.")
     else:
         schema = CrashSchema
     fields0 = schema().serialize_to_ckan_fields()
