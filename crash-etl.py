@@ -276,7 +276,31 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     # The stuff below was originally written as a separate function
     # called avoid_null_keys, but based on the above warning, it seems
     # better to merge it with omit_owners.
-
+        unconverted_boolean_fields = ['interstate', 'state_road', 'local_road_only',
+                'turnpike', 'wet_road', 'snow_slush_road', 'icy_road', 'sudden_deer',
+                'shldr_related', 'rear_end', 'ho_oppdir_sdswp', 'hit_fixed_object',
+                'sv_run_off_rd', 'work_zone', 'property_damage_only', 'fatal_or_maj_inj',
+                'injury', 'fatal', 'non_intersection', 'intersection', 'signalized_int',
+                'stop_controlled_int', 'unsignalized_int', 'school_bus', 'school_zone',
+                'hit_deer', 'hit_tree_shrub', 'hit_embankment', 'hit_pole', 'hit_gdrail',
+                'hit_gdrail_end', 'hit_barrier', 'hit_bridge', 'overturned', 'motorcycle',
+                'bicycle', 'hvy_truck_related', 'vehicle_failure', 'train_trolley',
+                'phantom_vehicle', 'alcohol_related', 'drinking_driver', 'underage_drnk_drv',
+                'unlicensed', 'cell_phone', 'no_clearance', 'running_red_lt', 'tailgating',
+                'cross_median', 'curve_dvr_error', 'limit_65mph', 'speeding',
+                'speeding_related', 'aggressive_driving', 'fatigue_asleep', 'driver_17yr',
+                'driver_65_74yr', 'driver_75plus', 'unbelted', 'pedestrian', 'distracted',
+                'curved_road', 'driver_18yr', 'driver_19yr', 'driver_20yr', 'driver_50_64yr',
+                'vehicle_towed', 'fire_in_vehicle', 'hit_parked_vehicle', 'mc_drinking_driver',
+                'drugged_driver', 'injury_or_fatal', 'comm_vehicle', 'impaired_driver',
+                'drug_related', 'hazardous_truck', 'illegal_drug_related',
+                'illumination_dark', 'minor_injury', 'moderate_injury', 'major_injury',
+                'nhtsa_agg_driving', 'psp_reported', 'running_stop_sign', 'train',
+                'trolley', 'deer_related'] # This new format first appeared in the 2018 data.
+        yes_no_to_0_1 = {'Yes': 1, 'No': 0}
+        for field in unconverted_boolean_fields:
+            if data[field] not in ['0', '1', '', None]:
+                data[field] = yes_no_to_0_1[data[field]]
 # Resource Metadata
 #package_id = '626e59d2-3c0e-4575-a702-46a71e8b0f25'     # Production
 #package_id = '85910fd1-fc08-4a2d-9357-e0692f007152'     # Stage
