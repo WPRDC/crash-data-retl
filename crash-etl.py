@@ -1,4 +1,11 @@
-"""The best way to use this script now is:
+"""This script both infers a year to create a table of crash data for (using
+the provided filename) and upserts the data to the cumulative table.
+
+This iteration of the crash-etl.py script also converts data from the format received in 2018
+(which has the old horrible 0/1 booleans converted into No/Yes values) back to the old horrible
+format for consistency.
+
+The best way to use this script now is:
 
 > python crash-etl.py 2004-crashes.csv production
 > python crash-etl.py 2005-crashes.csv production
