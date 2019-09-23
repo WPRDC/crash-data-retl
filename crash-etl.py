@@ -23,13 +23,15 @@ from marshmallow import fields, pre_load, post_load
 sys.path.insert(0, '/Users/drw/WPRDC/etl-dev/wprdc-etl') # A path that we need to import code from
 import pipeline as pl
 from subprocess import call
-from pprint import pprint
 import time
 
 import ckanapi
 
 from parameters.local_parameters import SETTINGS_FILE, DATA_PATH
 from util.notify import send_to_slack
+
+from pprint import pprint
+from icecream import ic
 
 class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
     # (rather than synthesized liens).
