@@ -301,6 +301,26 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
         for field in unconverted_boolean_fields:
             if data[field] not in ['0', '1', '', None]:
                 data[field] = yes_no_to_0_1[data[field]]
+
+        # 2018 data includes leading zeros in times (e.g., 013000 for
+        # 1:30am) and other fields. In the cumulative resource, all of the
+        # previous data had these leading zeros except for 2016+2017 data;
+        # however, data for the individual years does not have these
+        # in cases like the 2015 data (and possibly all previous years).
+
+        # The processing below is a solution to standardize these records
+        # despite having lost some of the raw data (probably eaten by
+        # the old CKAN).
+        length_by_field = {'crash_county': 2, 'police_agcy': 5,
+                'crash_month': 2, 'time_of_day': 4,
+                'hour_of_day': 2, 'municipality': 5,
+                'intersect_type': 2, 'location_type': 2,
+                'route': 4, 'segment': 4}
+        for field in length_by_field.keys():
+            if data[field] is not None:
+                if len(data[field]) != length_by_field[field] and len(data[field]) != 0:
+                    data[field] = data[field].zfill(length_by_field[field])
+
 # Resource Metadata
 #package_id = '626e59d2-3c0e-4575-a702-46a71e8b0f25'     # Production
 #package_id = '85910fd1-fc08-4a2d-9357-e0692f007152'     # Stage
