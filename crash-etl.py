@@ -332,7 +332,18 @@ class CrashSchema(pl.BaseSchema): # This schema supports raw lien records
 
 class ExtendedCrashSchema(CrashSchema):
     tot_inj_count = fields.Integer(dump_to="TOT_INJ_COUNT", allow_none=True)
-    school_bus_unit = fields.String(dump_to="SCHOOL_BUS_UNIT", allow_none=True)
+    school_bus_unit = fields.String(dump_to="SCHOOL_BUS_UNIT", allow_none=True) # This is another 0/1 boolean.
+    # Oddly, the schema makes this one a string but all the ones in CrashSchema are integers.
+    # [ ] Eventually the whole dataset should be overhauled and they can all be made proper booleans.
+
+    @pre_load
+    def fix_one_more_type(self, data):
+        unconverted_boolean_fields = ['school_bus_unit']
+        yes_no_to_0_1_character = {'Yes': '1', 'No': '0'} # This lookup is different than the one above.
+        for field in unconverted_boolean_fields:
+            if data[field] not in ['0', '1', '', None]:
+                data[field] = yes_no_to_0_1_character[data[field]]
+
 
 def get_package_parameter(site,package_id,parameter,API_key=None):
     # Some package parameters you can fetch from the WPRDC with
