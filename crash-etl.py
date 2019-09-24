@@ -454,9 +454,13 @@ def main(*args,**kwparams):
     ###### Cumulative Pipeline ###########
     schema = ExtendedCrashSchema
     kwargs = {}
-    specify_resource_by_name = False
-    cumulative_resource_id = "2c13021f-74a9-4289-a1e5-fe0472c89881"
-    kwargs['resource_id'] = cumulative_resource_id
+    if server == 'production':
+        specify_resource_by_name = False
+        cumulative_resource_id = "2c13021f-74a9-4289-a1e5-fe0472c89881"
+        kwargs['resource_id'] = cumulative_resource_id
+    else:
+        specify_resource_by_name = True
+        kwargs['resource_name'] = 'Cumulative Crash Data'
 
     cumulative_pipeline = pl.Pipeline('cumulative_crash_data_pipeline',
                                       'The Cumulative Pipeline for the Crash Data Which You Thought Would Never Come',
