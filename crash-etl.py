@@ -341,7 +341,7 @@ class ExtendedCrashSchema(CrashSchema):
         unconverted_boolean_fields = ['school_bus_unit']
         yes_no_to_0_1_character = {'Yes': '1', 'No': '0'} # This lookup is different than the one above.
         for field in unconverted_boolean_fields:
-            if data[field] not in ['0', '1', '', None]:
+            if field in data and data[field] not in ['0', '1', '', None]:
                 data[field] = yes_no_to_0_1_character[data[field]]
 
 
